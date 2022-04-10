@@ -37,7 +37,13 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $permissions = Permission::all();
-        return view('admin.roles.edit', compact('role', 'permissions'));
+        $assigned_permissions = $role->permissions;
+        foreach ($assigned_permissions as $assigned_permission)
+        {
+            $assigned_permissions_array[] = $assigned_permission->name;
+        }
+        // dd($assigned_permissions_array);
+        return view('admin.roles.edit', compact('role', 'permissions', 'assigned_permissions_array'));
     }
 
     public function update(Request $request, Role $role, FlasherInterface $flasher)
@@ -86,6 +92,31 @@ class RoleController extends Controller
     {
         $role->delete();
         Flasher::addInfo('Role has been deleted successfully!');
+        return redirect()->route('admin.roles.index');
+    }
+
+    public function update_role_permissions(Request $request, Role $role)
+    {
+        $old_permissions = $role->permissions;
+        foreach ($old_permissions as $old_permission)
+        {
+            $role->revokePermissionTo($old_permission->name);
+        }
+
+        // dd($role->permissions());
+
+        $input = $request->all();
+
+        try {
+            $permissions = $input['permission'];
+            foreach ($permissions as $permission) {
+                $role->givePermissionTo($permission);
+            }
+        } catch (\Exception $e) {
+            Flasher::addInfo('No permission has been configured!');
+            return redirect()->route('admin.roles.index');
+        }
+        Flasher::addSuccess('Permission has been configured!');
         return redirect()->route('admin.roles.index');
     }
 }
