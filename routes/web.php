@@ -21,8 +21,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/admin', function () {
-    return view('admin.index');
-})->middleware(['auth', 'role:admin'])->name('admin.index');
+Route::middleware(['auth', 'role:admin'])
+    ->name('admin.')
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\IndexController::class,'index'])->name('index');
+        Route::resource('/roles', \App\Http\Controllers\Admin\RoleController::class);
+        Route::resource('/permissions', \App\Http\Controllers\Admin\PermissionController::class);
+    });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

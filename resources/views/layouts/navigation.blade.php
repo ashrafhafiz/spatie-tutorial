@@ -12,14 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-admin-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-admin-link>
 
                     @role('admin')
-                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                    <x-admin-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
                         {{ __('Admin') }}
-                    </x-nav-link>
+                    </x-admin-link>
                     @endrole
                 </div>
             </div>
