@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Flasher\Prime\FlasherInterface;
-use Flasher\Toastr\Prime\ToastrFactory;
+// use Flasher\Toastr\Prime\ToastrFactory;
 
 class RoleController extends Controller
 {

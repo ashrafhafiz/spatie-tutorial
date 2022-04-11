@@ -42,7 +42,13 @@ class PermissionController extends Controller
     public function edit(Permission $permission)
     {
         $assigned_roles_array = [];
-        $roles = Role::all();
+        // $roles = Role::all();
+
+        // $admin = Role::where('name', '=', 'admin')->get()->first();
+        // $roles = Role::all()->except($admin->id);
+
+        $roles = Role::whereNotIn('name',['admin'])->get();
+
         foreach ($roles as $role)
         {
             if ($permission->hasRole($role))

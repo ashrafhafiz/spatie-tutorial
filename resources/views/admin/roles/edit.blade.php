@@ -20,15 +20,15 @@
                                 @error('name') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="sm:col-span-6 pt-5">
+                            <div class="sm:col-span-6 py-5 mt-5">
                                 <h2 class="text-2xl font-semibold">Role Permissions</h2>
                             </div>
 
-                            <div class="sm:col-span-6 pt-5">
+                            <div class="sm:col-span-6 p-5 bg-slate-50 rounded-2xl">
                                 @if($permissions)
                                     <ul>
                                         @foreach($permissions as $permission)
-                                            <li>
+                                            <li class="my-2">
                                                 <label>
                                                     <input
                                                         class="" type="checkbox" name="permission[]"
