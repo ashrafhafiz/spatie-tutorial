@@ -36,22 +36,45 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
+        $assigned_permissions_array = [];
         $permissions = Permission::all();
         $assigned_permissions = $role->permissions;
         foreach ($assigned_permissions as $assigned_permission)
         {
             $assigned_permissions_array[] = $assigned_permission->name;
         }
-        // dd($assigned_permissions_array);
+//        try {
+//
+//            dd($assigned_permissions_array);
+//        } catch (\Exception $e)
+//        {
+//
+//        }
+
         return view('admin.roles.edit', compact('role', 'permissions', 'assigned_permissions_array'));
     }
 
     public function update(Request $request, Role $role, FlasherInterface $flasher)
-
-
     {
         $validated = $request->validate(['name' => 'required|min:3']);
         $role->update($validated);
+
+        $old_permissions = $role->permissions;
+        foreach ($old_permissions as $old_permission)
+        {
+            $role->revokePermissionTo($old_permission->name);
+        }
+
+        // $input = $request->all();
+        if($request->input('permission') != null)
+        {
+            $new_permissions = $request->input('permission');
+            // dd($new_permissions);
+            foreach ($new_permissions as $permission) {
+                $role->givePermissionTo($permission);
+            }
+        }
+
 
         // return redirect()->route('admin.roles.index')->with('message', 'Role name updated successfully!');
 
@@ -73,7 +96,7 @@ class RoleController extends Controller
         // return redirect()->route('admin.roles.index');
 
         $flasher->type('success')
-            ->message('Role name updated successfully!')
+            ->message('Role has been updated successfully!')
             ->priority(2)
             ->handler('toastr')
             ->options([
@@ -95,28 +118,28 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index');
     }
 
-    public function update_role_permissions(Request $request, Role $role)
-    {
-        $old_permissions = $role->permissions;
-        foreach ($old_permissions as $old_permission)
-        {
-            $role->revokePermissionTo($old_permission->name);
-        }
-
-        // dd($role->permissions());
-
-        $input = $request->all();
-
-        try {
-            $permissions = $input['permission'];
-            foreach ($permissions as $permission) {
-                $role->givePermissionTo($permission);
-            }
-        } catch (\Exception $e) {
-            Flasher::addInfo('No permission has been configured!');
-            return redirect()->route('admin.roles.index');
-        }
-        Flasher::addSuccess('Permission has been configured!');
-        return redirect()->route('admin.roles.index');
-    }
+//    public function updatePermissions(Request $request, Role $role)
+//    {
+//        $old_permissions = $role->permissions;
+//        foreach ($old_permissions as $old_permission)
+//        {
+//            $role->revokePermissionTo($old_permission->name);
+//        }
+//
+//        // dd($role->permissions());
+//
+//        $input = $request->all();
+//
+//        try {
+//            $permissions = $input['permission'];
+//            foreach ($permissions as $permission) {
+//                $role->givePermissionTo($permission);
+//            }
+//        } catch (\Exception $e) {
+//            Flasher::addInfo('No permission has been configured!');
+//            return redirect()->route('admin.roles.index');
+//        }
+//        Flasher::addSuccess('Permission has been configured!');
+//        return redirect()->route('admin.roles.index');
+//    }
 }

@@ -26,8 +26,8 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\IndexController::class,'index'])->name('index');
-        Route::post('/roles/{role}/update_role_permissions', [\App\Http\Controllers\Admin\RoleController::class, 'update_role_permissions'])
-            ->name('roles.update_role_permissions');
+        Route::post('/roles/{role}/permissions', [\App\Http\Controllers\Admin\RoleController::class, 'updatePermissions'])
+            ->name('roles.permissions');
         Route::resource('/roles', \App\Http\Controllers\Admin\RoleController::class);
         Route::resource('/permissions', \App\Http\Controllers\Admin\PermissionController::class);
     });

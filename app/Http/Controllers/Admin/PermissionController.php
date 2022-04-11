@@ -8,6 +8,7 @@ use Flasher\Prime\FlasherInterface;
 use Flasher\Toastr\Prime\ToastrFactory;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -40,13 +41,42 @@ class PermissionController extends Controller
 
     public function edit(Permission $permission)
     {
-        return view('admin.permissions.edit', compact('permission'));
+        $assigned_roles_array = [];
+        $roles = Role::all();
+        foreach ($roles as $role)
+        {
+            if ($permission->hasRole($role))
+            {
+                $assigned_roles_array[] = $role->name;
+            }
+        }
+        // dd($assigned_roles_array);
+        return view('admin.permissions.edit', compact('permission', 'roles', 'assigned_roles_array'));
     }
 
     public function update(Request $request, Permission $permission, FlasherInterface $flasher)
     {
         $validated = $request->validate(['name' => 'required']);
         $permission->update($validated);
+
+        $roles = Role::all();
+        foreach ($roles as $role)
+        {
+            if ($permission->hasRole($role))
+            {
+                $permission->removeRole($role);
+            }
+        }
+
+        if($request->input('role') != null)
+        {
+            $new_roles = $request->input('role');
+            // dd($new_roles);
+            foreach ($new_roles as $role) {
+                $permission->assignRole($role);
+            }
+        }
+
 
         // return redirect()->route('admin.permissions.index')->with('message', 'Permission name updated successfully!');
 

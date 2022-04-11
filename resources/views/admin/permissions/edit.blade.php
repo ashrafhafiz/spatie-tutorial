@@ -21,6 +21,31 @@
                                 </div>
                                 @error('name') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
+
+                            <div class="sm:col-span-6 pt-5">
+                                <h2 class="text-2xl font-semibold">Assigned to Roles</h2>
+                            </div>
+
+                            <div class="sm:col-span-6 pt-5">
+                                @if($roles)
+                                    <ul>
+                                        @foreach($roles as $role)
+                                            <li>
+                                                <label>
+                                                    <input
+                                                        class="" type="checkbox" name="role[]"
+                                                        value="{{ $role->name }}"
+                                                        @if(in_array($role->name, $assigned_roles_array)) checked
+                                                        @endif> {{ $role->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>There is no assigned roles to list</p>
+                                @endif
+                            </div>
+
                             <div class="sm:col-span-6 pt-5">
                                 <button type="submit"
                                         class="px-4 py-2 bg-green-700 hover:bg-green-500 text-slate-100 rounded-md">

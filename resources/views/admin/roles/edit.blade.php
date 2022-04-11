@@ -19,6 +19,31 @@
                                 </div>
                                 @error('name') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
+
+                            <div class="sm:col-span-6 pt-5">
+                                <h2 class="text-2xl font-semibold">Role Permissions</h2>
+                            </div>
+
+                            <div class="sm:col-span-6 pt-5">
+                                @if($permissions)
+                                    <ul>
+                                        @foreach($permissions as $permission)
+                                            <li>
+                                                <label>
+                                                    <input
+                                                        class="" type="checkbox" name="permission[]"
+                                                        value="{{ $permission->name }}"
+                                                        @if(in_array($permission->name, $assigned_permissions_array)) checked
+                                                        @endif> {{ $permission->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>There is no permissions to list</p>
+                                @endif
+                            </div>
+
                             <div class="sm:col-span-6 pt-5">
                                 <button type="submit"
                                         class="px-4 py-2 bg-green-700 hover:bg-green-500 text-slate-100 rounded-md">
@@ -26,39 +51,6 @@
                                 </button>
                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="mt-6 p-2">
-                    <h2 class="text-2xl font-semibold">Role Permissions</h2>
-                    <div class="mt-4 p-2">
-                        @if($role->permissions)
-                            <ul>
-                                @foreach($role->permissions as $role_permission)
-                                    <li>{{ $role_permission->name }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-                    </div>
-                    <div class="mt-4 p-2">
-                        @if($permissions)
-                            <form method="POST" action="{{ route('admin.roles.update_role_permissions', $role) }}">
-                                @csrf
-                                <ul>
-                                    @foreach($permissions as $permission)
-                                        <li><label><input @if(in_array($permission->name, $assigned_permissions_array)) checked @endif class="" type="checkbox" name="permission[]" value="{{ $permission->name }}"> {{ $permission->name }}</label></li>
-                                    @endforeach
-                                </ul>
-                                <div class="sm:col-span-6 pt-5">
-                                    <button type="submit"
-                                            class="px-4 py-2 bg-green-700 hover:bg-green-500 text-slate-100 rounded-md">
-                                        Update
-                                    </button>
-                                </div>
-                            </form>
-                        @else
-                            <p>There is no permissions to list</p>
-                        @endif
-
                     </div>
                 </div>
             </div>
