@@ -106,16 +106,11 @@ class UserController extends Controller
     }
 
 
-
     public function editUserRoles(User $user)
     {
         $data['user'] = $user;
         $data['roles'] = Role::all();
         $data['user_assigned_roles'] = $user->getRoleNames()->toArray();
-
-        $data['permissions'] = Permission::all();
-        // get all permissions for the user, both directly, and from roles
-        $data['user_assigned_permissions'] = $user->getAllPermissions()->toArray();
 
         return view('admin.users.edit-roles', $data);
     }
@@ -130,26 +125,23 @@ class UserController extends Controller
     public function editUserPermissions(User $user)
     {
         $data['user'] = $user;
-        $data['roles'] = Role::all();
-        $data['user_assigned_roles'] = $user->getRoleNames()->toArray();
 
         $data['permissions'] = Permission::all();
-        // get all permissions for the user, both directly, and from roles
-        $a = $user->getAllPermissions()->toArray();
-        //dd($a);
-        foreach($a as $key => $value){
-            $b[] = $value['name'];
-        }
-        // dd($b);
-        $data['user_assigned_permissions'] = $b;
-        // dd($data['user_assigned_permissions']);
+        $data['user_direct_permissions'] = $user->getDirectPermissions()->pluck('name')->toArray();
+        $data['user_via_roles_permissions'] = $user->getPermissionsViaRoles()->pluck('name')->toArray();
+        $data['user_all_permissions'] = $user->getAllPermissions()->pluck('name')->toArray();
 
         return view('admin.users.edit-permissions', $data);
     }
 
     public function updateUserPermissions(Request $request, User $user, FlasherInterface $flasher)
     {
-        $user->syncPermissions($request->input('permission'));
+        $user_direct_permissions = $user->getDirectPermissions()->pluck('name')->toArray();
+        foreach ($user_direct_permissions as $user_direct_permission)
+        {
+            $user->revokePermissionTo($user_direct_permission);
+        }
+        $user->givePermissionTo($request->input('permission'));
         Flasher::addInfo('User permissions has been updated successfully!');
         return redirect()->route('admin.users.index');
     }

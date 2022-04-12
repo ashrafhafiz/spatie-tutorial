@@ -28,30 +28,6 @@
                                 @error('email') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="sm:col-span-6 py-5 mt-5">
-                                <h2 class="text-2xl font-semibold">Roles</h2>
-                            </div>
-
-                            <div class="sm:col-span-6 p-5 bg-slate-50 rounded-2xl">
-                                @if($roles)
-                                    <ul>
-                                        @foreach($roles as $role)
-                                            <li class="my-2">
-                                                <label>
-                                                    <input
-                                                        class="" type="checkbox" name="role[]"
-                                                        value="{{ $role->name }}"
-                                                        @if(in_array($role->name, $user_assigned_roles)) checked
-                                                        @endif> {{ $role->name }}
-                                                </label>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <p>There is no roles to list</p>
-                                @endif
-                            </div>
-
                             <div class="sm:col-span-6 pt-5">
                                 <button type="submit"
                                         class="px-4 py-2 bg-green-700 hover:bg-green-500 text-slate-100 rounded-md">

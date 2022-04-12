@@ -38,9 +38,10 @@
                                             <li class="my-2">
                                                 <label>
                                                     <input
-                                                        class="" type="checkbox" name="permission[]"
+                                                        class="disabled:opacity-50" type="checkbox" name="@if(in_array($permission->name, $user_via_roles_permissions)) nothing @else permission[] @endif"
                                                         value="{{ $permission->name }}"
-                                                        @if(in_array($permission->name, $user_assigned_permissions)) checked disabled class="accent-pink-500"
+                                                        @if(in_array($permission->name, $user_via_roles_permissions)) checked disabled
+                                                        @elseif(in_array($permission->name, $user_direct_permissions)) checked
                                                         @endif> {{ $permission->name }}
                                                 </label>
                                             </li>
