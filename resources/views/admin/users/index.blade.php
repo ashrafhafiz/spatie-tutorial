@@ -69,6 +69,26 @@
                                                             <a href="{{ route('admin.users.edit', $user) }}"
                                                                class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md">Edit</a>
                                                         @endif
+
+                                                        @if($user->name === 'admin')
+                                                            <button class="px-4 py-2 bg-gray-200 text-white rounded-md"
+                                                                    disabled>Roles
+                                                            </button>
+                                                        @else
+                                                            <a href="{{ route('admin.users.roles', $user) }}"
+                                                               class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 text-white rounded-md">Roles</a>
+                                                        @endif
+
+                                                        @if($user->name === 'admin')
+                                                            <button class="px-4 py-2 bg-gray-200 text-white rounded-md"
+                                                                    disabled>Permissions
+                                                            </button>
+                                                        @else
+                                                            <a href="{{ route('admin.users.permissions', $user) }}"
+                                                               class="px-4 py-2 bg-teal-500 hover:bg-teal-700 text-white rounded-md">Permissions</a>
+                                                        @endif
+
+
                                                         <form
                                                             class="@if($user->name !== 'admin') px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md @else px-4 py-2 bg-gray-200 text-white rounded-md @endif"
                                                             method="POST"

@@ -25,11 +25,22 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->prefix('admin')
     ->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\IndexController::class,'index'])->name('index');
+        Route::get('/', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->name('index');
 //        Route::post('/roles/{role}/permissions', [\App\Http\Controllers\Admin\RoleController::class, 'updatePermissions'])
 //            ->name('roles.permissions');
         Route::resource('/roles', \App\Http\Controllers\Admin\RoleController::class);
         Route::resource('/permissions', \App\Http\Controllers\Admin\PermissionController::class);
+
+        Route::get('/users/{user}/roles', [\App\Http\Controllers\Admin\UserController::class, 'editUserRoles'])
+            ->name('users.roles');
+        Route::post('/users/{user}/roles', [\App\Http\Controllers\Admin\UserController::class, 'updateUserRoles'])
+            ->name('users.roles');
+
+        Route::get('/users/{user}/permissions', [\App\Http\Controllers\Admin\UserController::class, 'editUserPermissions'])
+            ->name('users.permissions');
+        Route::post('/users/{user}/permissions', [\App\Http\Controllers\Admin\UserController::class, 'updateUserPermissions'])
+            ->name('users.permissions');
+
         Route::resource('/users', \App\Http\Controllers\Admin\UserController::class);
     });
 
