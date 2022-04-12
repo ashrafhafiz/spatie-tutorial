@@ -7,6 +7,7 @@ use App\Models\User;
 use Flasher\Laravel\Facade\Flasher;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 // use Flasher\Toastr\Prime\ToastrFactory;
@@ -53,21 +54,28 @@ class UserController extends Controller
 
     public function update(Request $request, User $user, FlasherInterface $flasher)
     {
-        $validated = $request->validate(['name' => 'required|min:3']);
+        // dd($request->input('role'));
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => [
+                'required',
+                Rule::unique('users')->ignore($user),
+            ],
+        ]);
         $user->update($validated);
 
-        $old_permissions = $user->permissions;
+        $old_roles = $user->getRoleNames()->toArray();
 
-        foreach ($old_permissions as $old_permission)
+        foreach ($old_roles as $role)
         {
-            $user->revokePermissionTo($old_permission->name);
+            $user->removeRole($role);
         }
 
-        if($request->input('permission') != null)
+        if($request->input('role') != null)
         {
-            $new_permissions = $request->input('permission');
-            foreach ($new_permissions as $permission) {
-                $user->givePermissionTo($permission);
+            $new_roles = $request->input('role');
+            foreach ($new_roles as $role) {
+                $user->assignRole($role);
             }
         }
 
